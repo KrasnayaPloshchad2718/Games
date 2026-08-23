@@ -18,7 +18,7 @@ function Button1Click();{
     if(state == 0){
         fetch("/api/state")
         .then(response => response.text())
-        .then(document.getElementById("Text1").innerHTML = Text1list[state] + "<br>" + response);
+        .then(document.getElementById("Button1Text").innerHTML = Text1list[state] + "<br>" + response);
     }
 
     stete += 1;
