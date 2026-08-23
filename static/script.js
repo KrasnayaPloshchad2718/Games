@@ -5,9 +5,9 @@ const Text1list = [
     "ゲーム終了"
 ];
 const Button1list = [
-    "接続";
-    "スタート";
-    "リセット";
+    "接続",
+    "スタート",
+    "リセット"
 ];
 
 function hyouji();{
