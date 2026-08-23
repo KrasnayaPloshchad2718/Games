@@ -7,6 +7,10 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+@app.route("/api/state")
+def get_state():
+    return {"state":"開始待ち"}
+
 
 if __name__ == "__main__":
     app.run(
