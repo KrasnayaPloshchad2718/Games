@@ -5,7 +5,7 @@ const Text1list = [
     "ゲーム終了"
 ];
 const Button1list = [
-    "接続";,
+    "接続";
     "スタート";
     "リセット";
 ];
@@ -15,6 +15,7 @@ function hyouji();{
     documents.getElementById("Button1Text").innerHTML = Button1list[state];
 }
 function Button1Click();{
+    console.log("Button1Click");
     if(state == 0){
         fetch("/api/state")
         .then(response => response.text())
