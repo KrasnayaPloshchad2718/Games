@@ -10,28 +10,28 @@ const Button1list = [
     "リセット"
 ];
 
-function hyouji();{
-    documents.getElementById("Text1").innerHTML = Text1list[state];
-    documents.getElementById("Button1Text").innerHTML = Button1list[state];
-}
-function Button1Click();{
+function hyouji(){
+    document.getElementById("Text1").innerHTML = Text1list[state];
+    document.getElementById("Button1Text").innerHTML = Button1list[state];
+};
+function Button1Click(){
     console.log("Button1Click");
     if(state == 0){
         fetch("/api/state")
         .then(response => response.text())
-        .then(document.getElementById("Button1Text").innerHTML = Text1list[state] + "<br>" + response);
+        .then(response => {document.getElementById("Button1Text").innerHTML = Text1list[state] + "<br>" + response});
     }
 
-    stete += 1;
+    state += 1;
     if(state > 2){
         shokika();
     }
     
-}
+};
 
-function shokika();{
+function shokika(){
 state = 0;
-}
+};
 
 document.addEventListener("DOMContentLoaded", function() {
     shokika();
