@@ -29,6 +29,26 @@ function Button1Click(){
     
 };
 
+document.getElementById("TextBox1").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        const text = this.value;
+
+        fetch("/api/test", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: text
+            })
+        })
+        .then(response => response.text())
+        .then(response => {
+            console.log("サーバーからの応答:", response);
+        });
+    }
+});
+
 function shokika(){
 state = 0;
 };
@@ -36,3 +56,4 @@ state = 0;
 document.addEventListener("DOMContentLoaded", function() {
     shokika();
 });
+
