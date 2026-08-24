@@ -29,7 +29,7 @@ function Button1Click(){
     
 };
 
-document.getElementById("TextBox1").addEventListener("keydown", function(event) {
+document.getElementById("Text1").addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
         const text = this.value;
 
