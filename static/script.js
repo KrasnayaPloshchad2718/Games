@@ -19,7 +19,7 @@ function Button1Click(){
     if(state == 0){
         fetch("/api/state")
         .then(response => response.text())
-        .then(response => {document.getElementById("Button1"). = Text1list[state] + "<br>" + response});
+        .then(response => {document.getElementById("Button1Text").innerHTML = Text1list[state] + "<br>" + response});
     }
 
     state += 1;
