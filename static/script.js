@@ -17,7 +17,7 @@ function hyouji(){
 function Button1Click(){
     console.log("Button1Click");
     if(state == 0){
-        fetch("/api/state")
+        fetch("/api/state",{cache: "no-cache"})
         .then(response => response.json())
         .then(response => {document.getElementById("Button1Text").innerHTML = Text1list[state] + "<br>" + response.state});
     }
