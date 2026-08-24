@@ -25,7 +25,7 @@ def test():
 
     print("受信:", test_text)
 
-    return {"status": "ok"}
+    return {"status": "ok content={}".format(test_text)}
 
 
 
