@@ -15,15 +15,18 @@ def get_state():
     else:
         return {"state":"開始待ち"}
 
-@app.route("/api/test")
-def test(data: TestData):
+@app.route("/api/test", methods=["POST"])
+def test():
     global test_text
 
-    test_text = data.text
+    data = request.get_json()
+
+    test_text = data["text"]
 
     print("受信:", test_text)
 
     return {"status": "ok"}
+
 
 
 if __name__ == "__main__":
