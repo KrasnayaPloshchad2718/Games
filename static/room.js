@@ -1,6 +1,6 @@
 //room.js
 
-const authority = "False";
+let authority = "False";
 
 async function decision(){
     const res = await getRoomState(roomId);
@@ -8,11 +8,18 @@ async function decision(){
     const re = await registerPlayer(roomId, name);
     if (re.status === "ok"){
         document.getElementById("name").style.display = "none";
+        document.getElementById("waiting").style.display = "block";
+        document.getElementById("start_button").style.display = "none";
         
     }else{
         document.getElementById("name").innerHTML = "名前が重複しています。別の名前を入力してください。";
     }
 };
+
+async function startGame() {
+    if (authority === "True"){
+    }
+}
 
 async function getRoomState(roomId) {
     try {
@@ -68,14 +75,19 @@ async function shokika(){
     const name = sessionStorage.getItem("player_name");
     if(name==null){
         document.getElementById("name").style.display = "block";
+        document.getElementById("waiting").style.display = "none";
+        document.getElementById("game").style.display = "none";
     }else{
         document.getElementById("name").style.display = "none";
+        document.getElementById("waiting").style.display = "block";
+        document.getElementById("game").style.display = "none";
         const res = await registerPlayer(roomId, name);
 
             if (res !== null && res.status === "ok") {
                 console.log("登録成功");
             }   
     }
+    
     const res = await getRoomState(roomId);
     const host = res.room.host;
     if (host === name){
@@ -114,6 +126,47 @@ setInterval(async () => {
         updatePlayerList(res.room.players, res.room.host);
     }
 }, 1000);
+
+
+const conditions = [
+    ["word_wolf", "ワードウルフ"],
+    ["ng_word", "NGワードゲーム"],
+    ["other", "その他"]
+];
+
+const selectBox = document.getElementById("game-select");
+const current = selectBox.querySelector(".select-current");
+const optionsBox = selectBox.querySelector(".select-options");
+
+let selectedValue = null;
+
+// 選択肢を生成
+conditions.forEach(([value, text]) => {
+
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.textContent = text;
+    button.dataset.value = value;
+
+    button.addEventListener("click", () => {
+
+        current.childNodes[0].textContent = text;
+
+        selectedValue = value;
+
+        selectBox.classList.remove("open");
+
+        console.log("選択:", selectedValue);
+    });
+
+    optionsBox.appendChild(button);
+});
+
+// 選択ボックスを開く
+current.addEventListener("click", () => {
+    selectBox.classList.toggle("open");
+});
 
 
 document.addEventListener("DOMContentLoaded", function() {

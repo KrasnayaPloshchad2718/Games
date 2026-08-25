@@ -19,11 +19,22 @@
         </div>
         <div id="waiting">
             <p>待機中...</p>
-            <button id="start_button">開始</button>
+            <div class="select-box" id="game-select">
+                <button class="select-current" type="button">
+                    ゲームを選択
+                    <span>▼</span>
+                </button>
+
+                <div class="select-options"></div>
+            </div>
+
+            <button id="start_button" onclick="startGame()">開始</button>
         </div>
         <div id="game">
-            <p id="game_text"></p>
-        </div>
+            <h2 id="game_title"></h2>
+            <h3 id="game_text"></h3>
+      </div>
+
         </session>
         <aside id="name_area">
             <h2>参加者</h2>

@@ -97,6 +97,18 @@ def room(room_id):
     else:
         return "部屋が存在しません", 404
 
+conditions = {
+    "weather": "天気"
+    #ほかの話題も追加
+}
+
+@app.route("/api/conditions")
+def get_conditions():
+    return {
+        "status": "ok",
+        "conditions": conditions
+    }
+
 @app.route("/api/roomstate", methods=["POST"])
 def get_roomstate():
     data = request.get_json()
