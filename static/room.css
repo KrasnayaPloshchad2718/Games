@@ -426,3 +426,187 @@ button:active {
         min-height: 450px;
     }
 }
+
+/* =========================
+   ゲーム継続確認
+   ========================= */
+
+#select {
+    display: none;
+
+    width: 420px;
+    padding: 35px;
+
+    background: rgba(20, 20, 30, 0.95);
+
+    border: 1px solid #555;
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.35);
+
+    text-align: center;
+}
+
+#select h1 {
+    margin-top: 0;
+    margin-bottom: 30px;
+
+    font-size: 24px;
+    font-weight: 600;
+}
+
+
+/* ボタン共通 */
+
+#select button {
+    min-width: 130px;
+    padding: 13px 25px;
+
+    margin: 5px;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        box-shadow 0.15s,
+        opacity 0.15s;
+}
+
+#select button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+}
+
+#select button:active {
+    transform: translateY(0);
+}
+
+
+/* 継続 */
+
+#select_continue {
+    background: #4caf50;
+    color: white;
+}
+
+
+/* 終了 */
+
+#select_end {
+    background: #555;
+    color: white;
+}
+
+
+/* =========================
+   ゲーム画面
+   ========================= */
+
+#game {
+    display: none;
+
+    width: 600px;
+    min-height: 350px;
+
+    padding: 30px;
+
+    background: rgba(20, 20, 30, 0.95);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+#game_title {
+    margin-top: 0;
+    margin-bottom: 5px;
+
+    font-size: 22px;
+}
+
+#round_text {
+    margin-top: 0;
+    margin-bottom: 25px;
+
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+#game_text {
+    padding: 20px;
+
+    min-height: 100px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    line-height: 2;
+
+    font-size: 18px;
+}
+
+
+/* =========================
+   ゲーム終了ボタン
+   ========================= */
+
+#end_game {
+    margin-top: 30px;
+
+    padding: 10px 25px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #555;
+    color: white;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+#end_game:hover {
+    background: #333;
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   開始ボタン
+   ========================= */
+
+#start_button {
+    margin-top: 15px;
+
+    padding: 12px 35px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #3f51b5;
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+#start_button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+}

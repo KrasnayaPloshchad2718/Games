@@ -200,6 +200,56 @@ def get_roomstate():
     return {"status":"ok",
             "word":words}
 
+
+@app.route("/api/end", methods=["POST"])
+def end_game():
+    data = request.get_json()
+    room_id = data["room_id"]
+
+    if room_id not in room_state:
+        return {
+            "status": "error",
+            "text": "部屋が存在しません"
+        }, 404
+
+    room_state[room_id]["state"] = "終了"
+
+    return {
+        "status": "ok",
+        "text": "ゲームを終了しました"
+    }
+
+
+@app.route("/api/continue", methods=["POST"])
+def continue_game():
+    data = request.get_json()
+    room_id = data["room_id"]
+
+    if room_id not in room_state:
+        return {
+            "status": "error",
+            "text": "部屋が存在しません"
+        }, 404
+
+    room = room_state[room_id]
+
+    # ラウンドを1増やす
+    room["game"]["round"] += 1
+
+    # 次のゲームの準備
+    room["game"]["words"] = {}
+    room["game"]["turn"] = 0
+
+    # 再び開始待ち
+    room["state"] = "開始待ち"
+
+    return {
+        "status": "ok",
+        "round": room["game"]["round"],
+        "text": "継続しました"
+    }
+
+
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",

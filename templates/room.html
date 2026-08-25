@@ -31,10 +31,15 @@
             <button class="select-box" id="start_button" onclick="startGame()">開始</button>
         </div>
         <div id="game">
-            <h2 id="game_title"></h2>
+            <h2 id="game_title">↓各プレイヤーのワード一覧</h2>
             <h3 id="game_text"></h3>
-      </div>
-
+            <button id="end_game" onclick="endGame()">終了</button>
+        </div>
+        <div id="select">
+            <h1>ゲームを続けますか？</h1>
+            <button id="select_continue" onclick="continueGame()">継続</button>
+            <button id="select_end" onclick="finishGame()">終了</button>            
+        </div>
         </session>
         <aside id="name_area">
             <h2>参加者</h2>
