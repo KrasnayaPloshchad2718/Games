@@ -109,6 +109,20 @@ def get_conditions():
         "conditions": conditions
     }
 
+@app.route("/api/start", methods=["POST"])
+def startGame():
+    data = request.get_json()
+    room_id = data["text"]
+    if room_id in room_state:
+        room_state[room_id]["state"] = "開始済み"
+        return {"status":"ok",
+                "text":"開始完了"}
+    else:
+        return {"status":"error",
+                "text":"エラーが発生"},404
+
+
+
 @app.route("/api/roomstate", methods=["POST"])
 def get_roomstate():
     data = request.get_json()

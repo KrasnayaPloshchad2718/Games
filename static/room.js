@@ -1,16 +1,16 @@
 //room.js
 
-let authority = "False";
-
+let authority = "False"
+let playername = "";
 async function decision(){
     const res = await getRoomState(roomId);
-    const name = document.getElementById("name_input").value;
+    playername = document.getElementById("name_input").value;
     const re = await registerPlayer(roomId, name);
     if (re.status === "ok"){
         document.getElementById("name").style.display = "none";
         document.getElementById("waiting").style.display = "block";
+        document.getElementById("game-select").style.display = "none";
         document.getElementById("start_button").style.display = "none";
-        
     }else{
         document.getElementById("name").innerHTML = "名前が重複しています。別の名前を入力してください。";
     }
@@ -18,6 +18,34 @@ async function decision(){
 
 async function startGame() {
     if (authority === "True"){
+    try {
+        const response = await fetch("/api/start", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: roomId
+            })
+        });
+
+        const data = await response.json();
+
+        console.log("開始結果:", data);
+
+        if (data.status === "ok") {
+            console.log("ゲーム開始");
+
+            document.getElementById("waiting").style.display = "none";
+            document.getElementById("game").style.display = "block";
+
+        } else {
+            console.error("開始失敗:", data.text);
+        }
+
+    } catch (error) {
+        console.error("通信エラー:", error);
+    }
     }
 }
 
@@ -81,6 +109,7 @@ async function shokika(){
         document.getElementById("name").style.display = "none";
         document.getElementById("waiting").style.display = "block";
         document.getElementById("game").style.display = "none";
+        playername = name 
         const res = await registerPlayer(roomId, name);
 
             if (res !== null && res.status === "ok") {
@@ -124,13 +153,20 @@ setInterval(async () => {
 
     if (res !== null) {
         updatePlayerList(res.room.players, res.room.host);
+        if (playername !== res.room.host){
+        if (re.room.state === "開始済み"){
+            document.getElementById("waiting").style.display = "none";
+            document.getElementById("game").styale.display = "block";
+
+        }
+        }
+            
     }
 }, 1000);
 
 
 const conditions = [
-    ["word_wolf", "ワードウルフ"],
-    ["ng_word", "NGワードゲーム"],
+    ["no_price", "特にこのボックスに意味はないです"],
     ["other", "その他"]
 ];
 
