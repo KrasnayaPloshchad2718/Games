@@ -107,7 +107,7 @@ setInterval(async () => {
     const res = await getRoomState(roomId);
 
     if (res !== null) {
-        updatePlayerList(res.players, res.host);
+        updatePlayerList(res.room.players, res.room.host);
     }
 }, 1000);
 
