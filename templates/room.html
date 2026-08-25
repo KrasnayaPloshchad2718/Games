@@ -11,8 +11,8 @@
     </head>
     <body>
         <session id="game_area">
-        <div id="room_id">{{ room_id }}</div>
-        <div id="player_name"></div>
+        <div class="state" id="room_id">{{ room_id }}</div>
+        <div classid="player_name"></div>
         <div id="name">
             <input type="text" id="name_input" placeholder="名前を入力">
             <button id="name_button" onclick="decision()">決定</button>
@@ -25,10 +25,12 @@
             <p id="game_text"></p>
         </div>
         </session>
-        <session id="name_area">
-            <div id="connected">
-            </div>
+        <aside id="name_area">
+            <h2>参加者</h2>
 
-        </session>
+            <ul id="player_list">
+                <!-- JSでここに参加者を追加 -->
+            </ul>
+        </aside>
     </body>
 </html>

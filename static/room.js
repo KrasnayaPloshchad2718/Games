@@ -82,6 +82,35 @@ async function shokika(){
 
 };
 
+function updatePlayerList(players, host) {
+    const list = document.getElementById("player_list");
+
+    // 一度空にする
+    list.innerHTML = "";
+
+    players.forEach(name => {
+        const li = document.createElement("li");
+
+        li.className = "player";
+
+        if (name === host) {
+            li.textContent = "★ " + name + "（ホスト）";
+        } else {
+            li.textContent = name;
+        }
+
+        list.appendChild(li);
+    });
+}
+
+setInterval(async () => {
+    const res = await getRoomState(roomId);
+
+    if (res !== null) {
+        updatePlayerList(res.state.players, res.state.host);
+}, 1000);
+
+
 document.addEventListener("DOMContentLoaded", function() {
     shokika();
 });
