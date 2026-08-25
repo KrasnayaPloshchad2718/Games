@@ -3,6 +3,8 @@
 const authority = "False";
 
 async function decision(){
+    const res = await getRoomState(roomId);
+    const name = document.getElementById("name_input").value;
     const re = await registerPlayer(roomId, name);
     if (re.status === "ok"){
         document.getElementById("name").style.display = "none";
