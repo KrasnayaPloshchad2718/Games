@@ -5,7 +5,8 @@ let playername = "";
 async function decision(){
     const res = await getRoomState(roomId);
     playername = document.getElementById("name_input").value;
-    const re = await registerPlayer(roomId, playernamename);
+    const re = await registerPlayer(roomId, playername
+    );
     if (re.status === "ok"){
         document.getElementById("name").style.display = "none";
         document.getElementById("waiting").style.display = "block";
