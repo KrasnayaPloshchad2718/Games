@@ -4,6 +4,7 @@ async function decision(){
     const re = await registerPlayer(roomId, name);
     if (re.status === "ok"){
         document.getElementById("name").style.display = "none";
+        
     }else{
         document.getElementById("name").innerHTML = "名前が重複しています。別の名前を入力してください。";
     }
@@ -46,9 +47,9 @@ async function registerPlayer(roomId, name) {
                 name: name
             })
         });
-
+        
         const data = await response.json();
-
+        document.getElementById("player_name").innerHTML = name;
         console.log("登録結果:", data);
 
         return data;
