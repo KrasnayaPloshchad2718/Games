@@ -5,7 +5,7 @@ let playername = "";
 async function decision(){
     const res = await getRoomState(roomId);
     playername = document.getElementById("name_input").value;
-    const re = await registerPlayer(roomId, name);
+    const re = await registerPlayer(roomId, playernamename);
     if (re.status === "ok"){
         document.getElementById("name").style.display = "none";
         document.getElementById("waiting").style.display = "block";
@@ -15,6 +15,31 @@ async function decision(){
         document.getElementById("name").innerHTML = "名前が重複しています。別の名前を入力してください。";
     }
 };
+
+
+async function getWord() {
+    try {
+        const response = await fetch("/api/getwords", {
+            method: "GET",
+            cache: "no-cache"
+        });
+
+        const data = await response.json();
+
+        if (data.status === "ok") {
+            console.log("NGワード:", data.word);
+            return data.word;
+        } else {
+            console.error("NGワード取得失敗:", data);
+            return null;
+        }
+
+    } catch (error) {
+        console.error("通信エラー:", error);
+        return null;
+    }
+}
+
 
 async function startGame() {
     if (authority === "True"){
@@ -148,15 +173,29 @@ function updatePlayerList(players, host) {
     });
 }
 
+let word = ""
+
 setInterval(async () => {
     const res = await getRoomState(roomId);
 
     if (res !== null) {
         updatePlayerList(res.room.players, res.room.host);
         if (playername !== res.room.host){
-        if (re.room.state === "開始済み"){
+        if (res.room.state === "開始済み"){
             document.getElementById("waiting").style.display = "none";
-            document.getElementById("game").styale.display = "block";
+            document.getElementById("game").style.display = "block";
+            const words = res.room.game.words;
+
+            // 自分のNGワードを除外
+            const otherWords = Object.entries(words)
+                .filter(([name, word]) => name !== playername);
+
+            // 表示
+            document.getElementById("game_text").innerHTML =
+                otherWords
+                    .map(([name, word]) => `${name}：${word}`)
+                    .join("<br>");
+            
 
         }
         }
