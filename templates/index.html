@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-
+<!--index.html-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +11,14 @@
 
 <body>
 <section class="card" id="display1" title="Display 1">
-<button class="btn" id="Button1" onclick="Button1Click()">
-    <span id="Button1Text">Button 1</span>
-    <input type="text" id="TextBox1" placeholder="Send Test Message">
-</button>
+    <input type="text" id="TextBox1" placeholder="番号を入力">
+    <input type="text" id="name_input" placeholder="部屋を作成する場合名前を入力">
+    <button class="btn" id="Button1" onclick="Button1Click()">
+    <span id="Button1Text">部屋を作成</span>
+    </button>
+    <button class="btn" id="Button2" onclick="Button2Click()">
+    <span id="Button2Text">入室</span>
+    </button>
 <p id="Text1"></p>
 </section>
 </body>

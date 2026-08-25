@@ -1,0 +1,33 @@
+<html>
+    <!--room.html-->
+    <head>
+        <meta charset="UTF-8">
+        <title>NGWordGame</title>
+        <link rel="stylesheet" href="/static/room.css">
+        <script src="/static/room.js"defer></script>
+        <script>
+            const roomId = "{{ room_id }}";
+        </script>
+    </head>
+    <body>
+        <session id="game_area">
+        <div id="room_id" style="display:none;">{{ room_id }}</div>
+        <div id="name">
+            <input type="text" id="name_input" placeholder="名前を入力">
+            <button id="name_button" onclick="decision()">決定</button>
+        </div>
+        <div id="waiting">
+            <p>待機中...</p>
+            <button id="start_button">開始</button>
+        </div>
+        <div id="game">
+            <p id="game_text"></p>
+        </div>
+        </session>
+        <session id="name_area">
+            <div id="connected">
+            </div>
+
+        </session>
+    </body>
+</html>

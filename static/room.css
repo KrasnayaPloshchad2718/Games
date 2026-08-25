@@ -1,0 +1,260 @@
+/* room.css */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family:
+        "Segoe UI",
+        "Noto Sans JP",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #26354a 0%,
+            #111827 45%,
+            #080b11 100%
+        );
+
+    color: #ffffff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px;
+}
+
+
+/* メインゲーム領域 */
+
+#game_area {
+    width: min(700px, 100%);
+
+    min-height: 500px;
+
+    padding: 30px;
+
+    background: rgba(20, 27, 39, 0.92);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.45);
+
+    position: relative;
+}
+
+
+/* 部屋番号 */
+
+#room_id {
+    position: absolute;
+
+    top: 20px;
+    right: 25px;
+
+    padding: 6px 12px;
+
+    border-radius: 8px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    color: #aeb9c9;
+
+    font-size: 14px;
+}
+
+
+/* 名前入力 */
+
+#name {
+    width: min(400px, 100%);
+
+    margin: 100px auto 0;
+
+    padding: 30px;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    border-radius: 16px;
+
+    text-align: center;
+}
+
+#name h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+
+/* テキストボックス */
+
+#name_input {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    border: 1px solid #46536a;
+
+    border-radius: 10px;
+
+    background: #0d131d;
+
+    color: white;
+
+    font-size: 16px;
+
+    outline: none;
+}
+
+#name_input:focus {
+    border-color: #6ea8fe;
+
+    box-shadow:
+        0 0 0 3px rgba(110, 168, 254, 0.15);
+}
+
+
+/* ボタン */
+
+button {
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 12px 22px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    color: white;
+
+    background: #2563eb;
+
+    transition:
+        transform 0.1s,
+        filter 0.15s;
+}
+
+button:hover {
+    filter: brightness(1.15);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+
+#name_button {
+    width: 100%;
+
+    margin-top: 15px;
+}
+
+
+/* 待機画面 */
+
+#waiting {
+    display: none;
+
+    text-align: center;
+
+    padding-top: 180px;
+}
+
+#waiting p {
+    font-size: 24px;
+
+    color: #b9c3d1;
+}
+
+#start_button {
+    margin-top: 20px;
+
+    background: #16a34a;
+}
+
+
+/* ゲーム画面 */
+
+#game {
+    display: none;
+
+    text-align: center;
+
+    padding-top: 150px;
+}
+
+#game_text {
+    font-size: 28px;
+
+    font-weight: bold;
+}
+
+
+/* 参加者欄 */
+
+#name_area {
+    width: 220px;
+
+    margin-left: 20px;
+
+    padding: 20px;
+
+    background: rgba(20, 27, 39, 0.92);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+#name_area h3 {
+    margin-top: 0;
+
+    color: #dbe5f3;
+}
+
+
+#connected {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+/* スマホ */
+
+@media (max-width: 800px) {
+
+    body {
+        flex-direction: column;
+
+        padding: 15px;
+    }
+
+    #game_area {
+        min-height: 450px;
+    }
+
+    #name_area {
+        width: min(700px, 100%);
+
+        margin-left: 0;
+    }
+}
