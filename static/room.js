@@ -1,58 +1,113 @@
-//room.js
-
-let authority = "False"
+let authority = false;
 let playername = "";
-let state = 0
-async function decision(){
-    const res = await getRoomState(roomId);
-    playername = document.getElementById("name_input").value;
-    const re = await registerPlayer(roomId, playername
-    );
-    if (re.status === "ok"){
-        document.getElementById("name").style.display = "none";
-        document.getElementById("waiting").style.display = "block";
-        document.getElementById("game-select").style.display = "none";
-        document.getElementById("start_button").style.display = "none";
-    }else{
-        document.getElementById("name").innerHTML = "名前が重複しています。別の名前を入力してください。";
+
+let hostToken = sessionStorage.getItem("host_token");
+let playerToken = sessionStorage.getItem("player_token");
+
+let state = 0;
+let reloadHandled = false;
+
+
+// ==============================
+// 名前決定
+// ==============================
+
+async function decision() {
+
+    playername =
+        document.getElementById("name_input").value.trim();
+
+    if (!playername) {
+        return;
     }
-};
 
+    const result =
+        await registerPlayer(roomId, playername);
 
-async function getWord() {
-    try {
-        const response = await fetch("/api/getwords", {
-            method: "GET",
-            cache: "no-cache"
-        });
+    if (result && result.status === "ok") {
 
-        const data = await response.json();
+        sessionStorage.setItem(
+            "player_name",
+            playername
+        );
 
-        if (data.status === "ok") {
-            console.log("NGワード:", data.word);
-            return data.word;
-        } else {
-            console.error("NGワード取得失敗:", data);
-            return null;
-        }
+        sessionStorage.setItem(
+            "player_token",
+            result.player_token
+        );
 
-    } catch (error) {
-        console.error("通信エラー:", error);
-        return null;
+        authority = false;
+
+        showWaiting();
+
+    } else {
+
+        document.getElementById("name").innerHTML =
+            "名前が重複しています。別の名前を入力してください。";
     }
 }
 
 
+// ==============================
+// 待機画面
+// ==============================
+
+function showWaiting() {
+
+    document.getElementById("name").style.display =
+        "none";
+
+    document.getElementById("waiting").style.display =
+        "block";
+
+    document.getElementById("game").style.display =
+        "none";
+
+    document.getElementById("select").style.display =
+        "none";
+
+    if (authority) {
+
+        document.getElementById("game-select").style.display =
+            "block";
+
+        document.getElementById("start_button").style.display =
+            "block";
+
+    } else {
+
+        document.getElementById("game-select").style.display =
+            "none";
+
+        document.getElementById("start_button").style.display =
+            "none";
+    }
+}
+
+
+// ==============================
+// ゲーム開始
+// ==============================
+
 async function startGame() {
-    if (authority === "True"){
+
+    if (!authority) {
+        return;
+    }
+
     try {
+
         const response = await fetch("/api/start", {
+
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
-                text: roomId
+                room_id: roomId,
+                host_token: hostToken
             })
         });
 
@@ -61,337 +116,623 @@ async function startGame() {
         console.log("開始結果:", data);
 
         if (data.status === "ok") {
-            console.log("ゲーム開始");
 
-            document.getElementById("waiting").style.display = "none";
-            document.getElementById("game").style.display = "block";
+            showGame();
 
         } else {
-            console.error("開始失敗:", data.text);
+
+            console.error(data.text);
         }
 
     } catch (error) {
+
         console.error("通信エラー:", error);
-    }
     }
 }
 
-async function getRoomState(roomId) {
-    try {
-        const response = await fetch("/api/roomstate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                room_id: roomId
-            }),
-            cache: "no-cache"
-        });
 
-        const data = await response.json();
+// ==============================
+// ゲーム画面
+// ==============================
 
-        console.log("RoomState:", data);
+function showGame() {
 
-        return data;
-    }
-    catch (error) {
-        console.error("通信エラー:", error);
-        return null;
-    }
+    document.getElementById("waiting").style.display =
+        "none";
+
+    document.getElementById("game").style.display =
+        "block";
+
+    document.getElementById("select").style.display =
+        "none";
+
+    displayWords();
 }
 
-async function registerPlayer(roomId, name) {
-    try {
-        const response = await fetch("/api/room/player", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                room_id: roomId,
-                name: name
-            })
-        });
-        
-        const data = await response.json();
-        document.getElementById("player_name").innerHTML = name;
-        console.log("登録結果:", data);
 
-        return data;
-    }
-    catch (error) {
-        console.error("通信エラー:", error);
-        return null;
-    }
+// ==============================
+// NGワード表示
+// ==============================
+
+function displayWords() {
+
+    getRoomState(roomId).then(res => {
+
+        if (!res || !res.room) {
+            return;
+        }
+
+        const words = res.room.game.words;
+
+        const otherWords =
+            Object.entries(words)
+                .filter(([name, word]) =>
+                    name !== playername
+                );
+
+        document.getElementById("game_text").innerHTML =
+            otherWords
+                .map(([name, word]) =>
+                    `${name}：${word}`
+                )
+                .join("<br>");
+    });
 }
+
+
+// ==============================
+// ゲーム終了
+// ==============================
 
 async function endGame() {
 
-    // ホスト以外は何もしない
-    if (authority !== "True") {
+    if (!authority) {
         return;
     }
 
-    document.getElementById("game").style.display = "none";
-    document.getElementById("select").style.display = "block";
+    try {
+
+        const response = await fetch("/api/end", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                room_id: roomId,
+                host_token: hostToken
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.status === "ok") {
+
+            document.getElementById("game").style.display =
+                "none";
+
+            document.getElementById("select").style.display =
+                "block";
+        }
+
+    } catch (error) {
+
+        console.error("通信エラー:", error);
+    }
 }
+
+
+// ==============================
+// 継続
+// ==============================
 
 async function continueGame() {
 
-    if (authority !== "True") {
+    if (!authority) {
         return;
     }
 
     try {
+
         const response = await fetch("/api/continue", {
+
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
-                room_id: roomId
+                room_id: roomId,
+                host_token: hostToken
             })
         });
 
         const data = await response.json();
 
-        console.log("継続結果:", data);
-
         if (data.status === "ok") {
 
-            document.getElementById("select").style.display = "none";
-            document.getElementById("game").style.display = "none";
-            document.getElementById("waiting").style.display = "block";
+            /*
+             * サーバー側で
+             *
+             * round += 1
+             *
+             * が行われている。
+             *
+             * 全員をリロードさせる。
+             */
 
-            // ホストだけ開始操作をできる
-            document.getElementById("game-select").style.display = "block";
-            document.getElementById("start_button").style.display = "block";
-
-            state = 0;
-
-        } else {
-            console.error("継続失敗:", data.text);
+            location.reload();
         }
 
     } catch (error) {
+
         console.error("通信エラー:", error);
     }
 }
 
-async function finishGame() {
 
-    if (authority !== "True") {
-        return;
-    }
+// ==============================
+// 終了
+// ==============================
+
+function finishGame() {
+
+    document.getElementById("select").style.display =
+        "none";
+
+    document.getElementById("game").style.display =
+        "none";
+
+    document.getElementById("waiting").style.display =
+        "block";
+}
+
+
+// ==============================
+// 部屋状態取得
+// ==============================
+
+async function getRoomState(roomId) {
 
     try {
-        const response = await fetch("/api/end", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                room_id: roomId
-            })
-        });
 
-        const data = await response.json();
+        const response = await fetch(
+            "/api/roomstate",
+            {
+                method: "POST",
 
-        console.log("終了結果:", data);
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
 
-        if (data.status === "ok") {
+                body: JSON.stringify({
+                    room_id: roomId
+                }),
 
-            document.getElementById("select").style.display = "none";
-            document.getElementById("game").style.display = "none";
-            document.getElementById("waiting").style.display = "block";
+                cache: "no-cache"
+            }
+        );
 
-            document.getElementById("game-select").style.display = "none";
-            document.getElementById("start_button").style.display = "none";
-
-        }
+        return await response.json();
 
     } catch (error) {
-        console.error("通信エラー:", error);
+
+        console.error(
+            "通信エラー:",
+            error
+        );
+
+        return null;
     }
 }
 
-async function shokika(){
-    const name = sessionStorage.getItem("player_name");
-    state = 0
-    if(name==null){
-        document.getElementById("name").style.display = "block";
-        document.getElementById("waiting").style.display = "none";
-        document.getElementById("game").style.display = "none";
-    }else{
-        document.getElementById("name").style.display = "none";
-        document.getElementById("waiting").style.display = "block";
-        document.getElementById("game").style.display = "none";
-        playername = name 
-        const res = await registerPlayer(roomId, name);
 
-            if (res !== null && res.status === "ok") {
-                console.log("登録成功");
-            }   
+// ==============================
+// プレイヤー登録
+// ==============================
+
+async function registerPlayer(roomId, name) {
+
+    try {
+
+        const response = await fetch(
+            "/api/room/player",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    room_id: roomId,
+                    name: name
+                })
+            }
+        );
+
+        const data =
+            await response.json();
+
+        console.log(
+            "登録結果:",
+            data
+        );
+
+        return data;
+
+    } catch (error) {
+
+        console.error(
+            "通信エラー:",
+            error
+        );
+
+        return null;
     }
-    
-    const res = await getRoomState(roomId);
-    const host = res.room.host;
-    if (host === name){
-    authority = "True";
-    }else{
-    authority = "False";
+}
+
+
+// ==============================
+// 再接続
+// ==============================
+
+async function reconnect() {
+
+    if (!playerToken && !hostToken) {
+        return false;
     }
 
-};
+    const token =
+        hostToken || playerToken;
 
-function updatePlayerList(players, host) {
-    const list = document.getElementById("player_list");
+    try {
 
-    // 一度空にする
+        const response =
+            await fetch(
+                "/api/room/reconnect",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        room_id: roomId,
+                        player_token: token
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (data.status !== "ok") {
+            return false;
+        }
+
+        playername = data.name;
+
+        if (data.role === "host") {
+            authority = true;
+        } else {
+            authority = false;
+        }
+
+        document.getElementById(
+            "player_name"
+        ).textContent = playername;
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "再接続エラー:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+// ==============================
+// プレイヤー一覧
+// ==============================
+
+function updatePlayerList(
+    players,
+    host
+) {
+
+    const list =
+        document.getElementById(
+            "player_list"
+        );
+
     list.innerHTML = "";
 
     players.forEach(name => {
-        const li = document.createElement("li");
 
-        li.className = "player";
+        const li =
+            document.createElement("li");
+
+        li.className =
+            "player";
 
         if (name === host) {
-            li.textContent = "★ " + name + "（ホスト）";
+
+            li.textContent =
+                "★ " +
+                name +
+                "（ホスト）";
+
         } else {
-            li.textContent = name;
+
+            li.textContent =
+                name;
         }
 
         list.appendChild(li);
     });
 }
 
-let word = ""
 
-setInterval(async () => {
+// ==============================
+// サーバーからのリロード要求
+// ==============================
 
-    const res = await getRoomState(roomId);
+async function checkReload(room) {
 
-    if (res === null) {
+    if (!room.reload) {
         return;
     }
 
-    updatePlayerList(
-        res.room.players,
-        res.room.host
-    );
+    if (reloadHandled) {
+        return;
+    }
 
-    const roomState = res.room.state;
+    reloadHandled = true;
 
-    // =========================
-    // ゲーム開始
-    // =========================
+    /*
+     * リロードする前にサーバーへ通知
+     */
 
-    if (roomState === "開始済み" && state === 0) {
+    try {
 
-        document.getElementById("waiting").style.display = "none";
-        document.getElementById("select").style.display = "none";
-        document.getElementById("game").style.display = "block";
+        await fetch(
+            "/api/reload_done",
+            {
+                method: "POST",
 
-        if (authority === "True") {
-            document.getElementById("end_game").style.display = "block";
-        } else {
-            document.getElementById("end_game").style.display = "none";
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    room_id: roomId
+                })
+            }
+        );
+
+    } catch (error) {
+
+        console.error(error);
+    }
+
+    location.reload();
+}
+
+
+// ==============================
+// 状態監視
+// ==============================
+
+const roomInterval =
+    setInterval(async () => {
+
+        const res =
+            await getRoomState(roomId);
+
+        if (!res || !res.room) {
+            return;
         }
 
-        const words = res.room.game.words;
+        updatePlayerList(
+            res.room.players,
+            res.room.host
+        );
 
-        const otherWords = Object.entries(words)
-            .filter(([name, word]) => name !== playername);
+        // 継続時のリロード
+        await checkReload(res.room);
 
-        document.getElementById("game_text").innerHTML =
-            otherWords
-                .map(([name, word]) => `${name}：${word}`)
-                .join("<br>");
+        // ゲーム開始
+        if (
+            state === 0 &&
+            res.room.state === "開始済み"
+        ) {
 
-        document.getElementById("round_text").textContent =
-            `第 ${res.room.game.round + 1} ラウンド`;
+            showGame();
 
-        state = 1;
-    }
-    // =========================
-    // ゲーム終了 → 待機
-    // =========================
-
-    if (roomState === "終了") {
-
-        document.getElementById("game").style.display = "none";
-        document.getElementById("select").style.display = "none";
-        document.getElementById("waiting").style.display = "block";
-
-        state = 0;
-    }
-
-
-    // =========================
-    // 継続
-    // =========================
-
-    if (roomState === "開始待ち" && state === 1) {
-
-        document.getElementById("game").style.display = "none";
-        document.getElementById("select").style.display = "none";
-        document.getElementById("waiting").style.display = "block";
-
-        // ホストだけ開始操作可能
-        if (authority === "True") {
-            document.getElementById("game-select").style.display = "block";
-            document.getElementById("start_button").style.display = "block";
-        } else {
-            document.getElementById("game-select").style.display = "none";
-            document.getElementById("start_button").style.display = "none";
+            state = 1;
         }
 
-        state = 0;
-    }
+        // 終了確認
+        if (
+            res.room.state === "終了確認"
+        ) {
 
-}, 1000);
+            document.getElementById(
+                "game"
+            ).style.display = "none";
+
+            /*
+             * ホストだけ選択画面を表示
+             */
+
+            if (authority) {
+
+                document.getElementById(
+                    "select"
+                ).style.display = "block";
+            }
+        }
+
+    }, 1000);
+
+
+// ==============================
+// ゲーム条件選択
+// ==============================
 
 const conditions = [
-    ["no_price", "特にこのボックスに意味はないです"],
-    ["other", "その他"]
+
+    [
+        "no_price",
+        "特にこのボックスに意味はないです"
+    ],
+
+    [
+        "other",
+        "その他"
+    ]
 ];
 
-const selectBox = document.getElementById("game-select");
-const current = selectBox.querySelector(".select-current");
-const optionsBox = selectBox.querySelector(".select-options");
+
+const selectBox =
+    document.getElementById(
+        "game-select"
+    );
+
+const current =
+    selectBox.querySelector(
+        ".select-current"
+    );
+
+const optionsBox =
+    selectBox.querySelector(
+        ".select-options"
+    );
+
 
 let selectedValue = null;
 
-// 選択肢を生成
-conditions.forEach(([value, text]) => {
 
-    const button = document.createElement("button");
+conditions.forEach(
+    ([value, text]) => {
 
-    button.type = "button";
-    button.textContent = text;
-    button.dataset.value = value;
+        const button =
+            document.createElement(
+                "button"
+            );
 
-    button.addEventListener("click", () => {
+        button.type =
+            "button";
 
-        current.childNodes[0].textContent = text;
+        button.textContent =
+            text;
 
-        selectedValue = value;
+        button.dataset.value =
+            value;
 
-        selectBox.classList.remove("open");
+        button.addEventListener(
+            "click",
+            () => {
 
-        console.log("選択:", selectedValue);
-    });
+                current.childNodes[0]
+                    .textContent = text;
 
-    optionsBox.appendChild(button);
-});
+                selectedValue =
+                    value;
 
-// 選択ボックスを開く
-current.addEventListener("click", () => {
-    selectBox.classList.toggle("open");
-});
+                selectBox.classList
+                    .remove("open");
+
+                console.log(
+                    "選択:",
+                    selectedValue
+                );
+            }
+        );
+
+        optionsBox.appendChild(
+            button
+        );
+    }
+);
 
 
-document.addEventListener("DOMContentLoaded", function() {
-    shokika();
-});
+current.addEventListener(
+    "click",
+    () => {
+
+        selectBox.classList.toggle(
+            "open"
+        );
+    }
+);
+
+
+// ==============================
+// 初期化
+// ==============================
+
+async function shokika() {
+
+    /*
+     * まず既存トークンで再接続を試す
+     */
+
+    const reconnected =
+        await reconnect();
+
+    if (reconnected) {
+
+        /*
+         * 再読み込み後なので
+         * 名前入力を完全に飛ばす
+         */
+
+        showWaiting();
+
+        return;
+    }
+
+
+    /*
+     * 初回アクセス
+     */
+
+    document.getElementById(
+        "name"
+    ).style.display = "block";
+
+    document.getElementById(
+        "waiting"
+    ).style.display = "none";
+
+    document.getElementById(
+        "game"
+    ).style.display = "none";
+
+    document.getElementById(
+        "select"
+    ).style.display = "none";
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+        shokika();
+    }
+);

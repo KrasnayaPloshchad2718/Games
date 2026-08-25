@@ -1,52 +1,183 @@
+<!DOCTYPE html>
+
 <html>
-    <!--room.html-->
-    <head>
-        <meta charset="UTF-8">
-        <title>NGWordGame</title>
-        <link rel="stylesheet" href="/static/room.css">
-        <script src="/static/room.js"defer></script>
-        <script>
-            const roomId = "{{ room_id }}";
-        </script>
-    </head>
-    <body>
-        <session id="game_area">
-        <div class="state" id="room_id">{{ room_id }}</div>
-        <div class="state" id="player_name"></div>
-        <div id="name">
-            <input type="text" id="name_input" placeholder="名前を入力">
-            <button id="name_button" onclick="decision()">決定</button>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>NGWordGame</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/room.css"
+    >
+
+    <script>
+        const roomId = "{{ room_id }}";
+    </script>
+
+    <script
+        src="/static/room.js"
+        defer>
+    </script>
+
+</head>
+
+
+<body>
+
+    <main id="game_area">
+
+        <div
+            class="state"
+            id="room_id">
+            {{ room_id }}
         </div>
+
+
+        <div
+            class="state"
+            id="player_name">
+        </div>
+
+
+        <!-- 名前入力 -->
+
+        <div id="name">
+
+            <input
+                type="text"
+                id="name_input"
+                placeholder="名前を入力"
+                maxlength="20"
+            >
+
+            <button
+                id="name_button"
+                onclick="decision()">
+                決定
+            </button>
+
+        </div>
+
+
+        <!-- 待機 -->
+
         <div id="waiting">
-            <p>待機中...</p>
-            <div class="select-box" id="game-select">
-                <button class="select-current" type="button">
+
+            <p class="waiting_text">
+                待機中...
+            </p>
+
+
+            <div
+                class="select-box"
+                id="game-select">
+
+                <button
+                    class="select-current"
+                    type="button">
+
                     条件を選択
+
                     <span>▼</span>
+
                 </button>
 
-                <div class="select-options"></div>
+
+                <div
+                    class="select-options">
+                </div>
+
             </div>
 
-            <button class="select-box" id="start_button" onclick="startGame()">開始</button>
-        </div>
-        <div id="game">
-            <h2 id="game_title">↓各プレイヤーのワード一覧</h2>
-            <h3 id="game_text"></h3>
-            <button id="end_game" onclick="endGame()">終了</button>
-        </div>
-        <div id="select">
-            <h1>ゲームを続けますか？</h1>
-            <button id="select_continue" onclick="continueGame()">継続</button>
-            <button id="select_end" onclick="finishGame()">終了</button>            
-        </div>
-        </session>
-        <aside id="name_area">
-            <h2>参加者</h2>
 
-            <ul id="player_list">
-                <!-- JSでここに参加者を追加 -->
-            </ul>
-        </aside>
-    </body>
+            <button
+                class="start-button"
+                id="start_button"
+                onclick="startGame()">
+
+                開始
+
+            </button>
+
+        </div>
+
+
+        <!-- ゲーム -->
+
+        <div id="game">
+
+            <h2>
+                ↓各プレイヤーのワード一覧
+            </h2>
+
+            <h3 id="game_text"></h3>
+
+
+            <button
+                class="end-button"
+                id="end_game"
+                onclick="endGame()">
+
+                終了
+
+            </button>
+
+        </div>
+
+
+        <!-- 継続確認 -->
+
+        <div id="select">
+
+            <h1>
+                ゲームを続けますか？
+            </h1>
+
+
+            <div class="select-buttons">
+
+                <button
+                    id="select_continue"
+                    onclick="continueGame()">
+
+                    継続
+
+                </button>
+
+
+                <button
+                    id="select_end"
+                    onclick="finishGame()">
+
+                    終了
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- プレイヤー一覧 -->
+
+    <aside id="name_area">
+
+        <h2>
+            参加者
+        </h2>
+
+
+        <ul id="player_list">
+
+        </ul>
+
+    </aside>
+
+</body>
+
 </html>
