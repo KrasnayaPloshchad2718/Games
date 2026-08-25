@@ -108,6 +108,7 @@ setInterval(async () => {
 
     if (res !== null) {
         updatePlayerList(res.state.players, res.state.host);
+    }
 }, 1000);
 
 
