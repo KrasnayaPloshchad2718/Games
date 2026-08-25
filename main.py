@@ -161,7 +161,7 @@ def startGame():
     words = []
     word_dict = {}
     if room_id in room_state:
-        players = room_state["room_id"]["players"]
+        players = room_state[room_id]["players"]
         for i in range(len(room_state[room_id]["players"])):
             word = (random.choice(ng_words))
             words.append(word)

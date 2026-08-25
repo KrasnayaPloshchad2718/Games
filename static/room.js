@@ -181,7 +181,6 @@ setInterval(async () => {
 
     if (res !== null) {
         updatePlayerList(res.room.players, res.room.host);
-        if (playername !== res.room.host){
         if (res.room.state === "開始済み"){
             document.getElementById("waiting").style.display = "none";
             document.getElementById("game").style.display = "block";
@@ -196,9 +195,6 @@ setInterval(async () => {
                 otherWords
                     .map(([name, word]) => `${name}：${word}`)
                     .join("<br>");
-            
-
-        }
         }
             
     }
