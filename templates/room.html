@@ -1,183 +1,145 @@
-<!DOCTYPE html>
-
 <html>
+    <!-- room.html -->
 
-<head>
+    <head>
 
-    <meta charset="UTF-8">
+        <meta charset="UTF-8">
 
-    <title>NGWordGame</title>
+        <title>NGWordGame</title>
 
-    <link
-        rel="stylesheet"
-        href="/static/room.css"
-    >
+        <link
+            rel="stylesheet"
+            href="/static/room.css"
+        >
 
-    <script>
-        const roomId = "{{ room_id }}";
-    </script>
+        <script
+            src="/static/room.js"
+            defer
+        ></script>
 
-    <script
-        src="/static/room.js"
-        defer>
-    </script>
+        <script>
+            const roomId = "{{ room_id }}";
+        </script>
 
-</head>
+    </head>
 
+    <body>
 
-<body>
-
-    <main id="game_area">
-
-        <div
-            class="state"
-            id="room_id">
-            {{ room_id }}
-        </div>
-
-
-        <div
-            class="state"
-            id="player_name">
-        </div>
-
-
-        <!-- 名前入力 -->
-
-        <div id="name">
-
-            <input
-                type="text"
-                id="name_input"
-                placeholder="名前を入力"
-                maxlength="20"
-            >
-
-            <button
-                id="name_button"
-                onclick="decision()">
-                決定
-            </button>
-
-        </div>
-
-
-        <!-- 待機 -->
-
-        <div id="waiting">
-
-            <p class="waiting_text">
-                待機中...
-            </p>
-
+        <session id="game_area">
 
             <div
-                class="select-box"
-                id="game-select">
+                class="state"
+                id="room_id"
+            >
+                {{ room_id }}
+            </div>
+
+            <div
+                class="state"
+                id="player_name"
+            ></div>
+
+
+            <div id="name">
+
+                <input
+                    type="text"
+                    id="name_input"
+                    placeholder="名前を入力"
+                >
 
                 <button
-                    class="select-current"
-                    type="button">
-
-                    条件を選択
-
-                    <span>▼</span>
-
+                    id="name_button"
+                    onclick="decision()"
+                >
+                    決定
                 </button>
 
+            </div>
+
+
+            <div id="waiting">
+
+                <p>待機中...</p>
 
                 <div
-                    class="select-options">
+                    class="select-box"
+                    id="game-select"
+                >
+
+                    <button
+                        class="select-current"
+                        type="button"
+                    >
+                        条件を選択
+                        <span>▼</span>
+                    </button>
+
+                    <div
+                        class="select-options"
+                    ></div>
+
                 </div>
 
+
+                <button
+                    class="select-box"
+                    id="start_button"
+                    onclick="startGame()"
+                >
+                    開始
+                </button>
+
             </div>
 
 
-            <button
-                class="start-button"
-                id="start_button"
-                onclick="startGame()">
+            <div id="game">
 
-                開始
+                <h2 id="game_title">
+                    ↓各プレイヤーのワード一覧
+                </h2>
 
-            </button>
-
-        </div>
-
-
-        <!-- ゲーム -->
-
-        <div id="game">
-
-            <h2>
-                ↓各プレイヤーのワード一覧
-            </h2>
-
-            <h3 id="game_text"></h3>
-
-
-            <button
-                class="end-button"
-                id="end_game"
-                onclick="endGame()">
-
-                終了
-
-            </button>
-
-        </div>
-
-
-        <!-- 継続確認 -->
-
-        <div id="select">
-
-            <h1>
-                ゲームを続けますか？
-            </h1>
-
-
-            <div class="select-buttons">
+                <h3 id="game_text"></h3>
 
                 <button
-                    id="select_continue"
-                    onclick="continueGame()">
-
-                    継続
-
-                </button>
-
-
-                <button
-                    id="select_end"
-                    onclick="finishGame()">
-
+                    id="end_game"
+                    onclick="endGame()"
+                >
                     終了
-
                 </button>
 
             </div>
 
-        </div>
 
-    </main>
+            <div id="select">
+
+                <h1>
+                    ゲームを続けますか？
+                </h1>
+
+                <button id="select_continue">
+                    継続
+                </button>
+
+                <button id="select_end">
+                    終了
+                </button>
+
+            </div>
+
+        </session>
 
 
-    <!-- プレイヤー一覧 -->
+        <aside id="name_area">
 
-    <aside id="name_area">
+            <h2>参加者</h2>
 
-        <h2>
-            参加者
-        </h2>
+            <ul id="player_list">
+                <!-- JSでここに参加者を追加 -->
+            </ul>
 
+        </aside>
 
-        <ul id="player_list">
-
-        </ul>
-
-    </aside>
-
-</body>
+    </body>
 
 </html>
