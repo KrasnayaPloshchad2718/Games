@@ -363,7 +363,7 @@ async function startGame() {
 // ==============================
 
 function endGame() {
-    if{authority === "True"}{
+    if(authority === "True"){
     document.getElementById(
         "game"
     ).style.display = "none";
