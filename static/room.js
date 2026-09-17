@@ -1,175 +1,16 @@
+// ==============================
+// room.js
+// ==============================
+
 let authority = "False";
 let playername = "";
+let word = "";
+let state = 0;
 
 
-async function decision() {
-
-    const res = await getRoomState(roomId);
-
-    playername =
-        document.getElementById("name_input").value;
-
-    const re =
-        await registerPlayer(roomId, playername);
-
-    if (re.status === "ok") {
-
-        sessionStorage.setItem(
-            "player_name",
-            playername
-        );
-
-        document.getElementById("name").style.display = "none";
-        document.getElementById("waiting").style.display = "block";
-        document.getElementById("game-select").style.display = "none";
-        document.getElementById("start_button").style.display = "none";
-
-    } else {
-
-        document.getElementById("name").innerHTML =
-            "名前が重複しています。別の名前を入力してください。";
-    }
-}
-
-
-async function getWord() {
-
-    try {
-
-        const response = await fetch(
-            "/api/getwords",
-            {
-                method: "GET",
-                cache: "no-cache"
-            }
-        );
-
-        const data =
-            await response.json();
-
-        if (data.status === "ok") {
-
-            console.log(
-                "NGワード:",
-                data.word
-            );
-
-            return data.word;
-
-        } else {
-
-            console.error(
-                "NGワード取得失敗:",
-                data
-            );
-
-            return null;
-        }
-
-    } catch (error) {
-
-        console.error(
-            "通信エラー:",
-            error
-        );
-
-        return null;
-    }
-}
-
-
-async function startGame() {
-
-    if (authority === "True") {
-
-        try {
-
-            const response = await fetch(
-                "/api/start",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        text: roomId
-                    })
-                }
-            );
-
-            const data =
-                await response.json();
-
-            console.log(
-                "開始結果:",
-                data
-            );
-
-            if (data.status === "ok") {
-
-                console.log("ゲーム開始");
-
-                document.getElementById("waiting").style.display = "none";
-                document.getElementById("game").style.display = "block";
-
-            } else {
-
-                console.error(
-                    "開始失敗:",
-                    data.text
-                );
-            }
-
-        } catch (error) {
-
-            console.error(
-                "通信エラー:",
-                error
-            );
-        }
-    }
-}
-
-
-async function getRoomState(roomId) {
-
-    try {
-
-        const response = await fetch(
-            "/api/roomstate",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    room_id: roomId
-                }),
-                cache: "no-cache"
-            }
-        );
-
-        const data =
-            await response.json();
-
-        console.log(
-            "RoomState:",
-            data
-        );
-
-        return data;
-
-    } catch (error) {
-
-        console.error(
-            "通信エラー:",
-            error
-        );
-
-        return null;
-    }
-}
-
+// ==============================
+// プレイヤー登録
+// ==============================
 
 async function registerPlayer(roomId, name) {
 
@@ -179,9 +20,11 @@ async function registerPlayer(roomId, name) {
             "/api/room/player",
             {
                 method: "POST",
+
                 headers: {
                     "Content-Type": "application/json"
                 },
+
                 body: JSON.stringify({
                     room_id: roomId,
                     name: name
@@ -189,73 +32,147 @@ async function registerPlayer(roomId, name) {
             }
         );
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
-        document.getElementById(
-            "player_name"
-        ).innerHTML = name;
+        const playerNameElement =
+            document.getElementById("player_name");
 
-        console.log(
-            "登録結果:",
-            data
-        );
+        if (playerNameElement) {
+            playerNameElement.innerHTML = name;
+        }
+
+        console.log("登録結果:", data);
 
         return data;
 
     } catch (error) {
 
-        console.error(
-            "通信エラー:",
-            error
-        );
+        console.error("通信エラー:", error);
 
         return null;
     }
 }
 
 
+// ==============================
+// 部屋状態取得
+// ==============================
+
+async function getRoomState(roomId) {
+
+    try {
+
+        const response = await fetch(
+            "/api/roomstate",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    room_id: roomId
+                }),
+
+                cache: "no-cache"
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("RoomState:", data);
+
+        return data;
+
+    } catch (error) {
+
+        console.error("通信エラー:", error);
+
+        return null;
+    }
+}
+
+
+// ==============================
+// 初期化
+// ==============================
+
 async function shokika() {
 
-    const name =
-        sessionStorage.getItem(
-            "player_name"
-        );
-    console.log(name ?? "None")
+    const name = sessionStorage.getItem(
+        "player_name"
+    );
+
+    console.log(name ?? "None");
 
     if (name == null) {
 
-        document.getElementById("name").style.display = "block";
-        document.getElementById("waiting").style.display = "none";
-        document.getElementById("game").style.display = "none";
+        document.getElementById(
+            "name"
+        ).style.display = "block";
+
+        document.getElementById(
+            "waiting"
+        ).style.display = "none";
+
+        document.getElementById(
+            "game"
+        ).style.display = "none";
+
+        document.getElementById(
+            "select"
+        ).style.display = "none";
 
     } else {
 
-        document.getElementById("name").style.display = "none";
-        document.getElementById("waiting").style.display = "block";
-        document.getElementById("game").style.display = "none";
+        document.getElementById(
+            "name"
+        ).style.display = "none";
+
+        document.getElementById(
+            "waiting"
+        ).style.display = "block";
+
+        document.getElementById(
+            "game"
+        ).style.display = "none";
+
+        document.getElementById(
+            "select"
+        ).style.display = "none";
 
         playername = name;
 
-        const res =
-            await registerPlayer(
-                roomId,
-                name
-            );
+        const res = await registerPlayer(
+            roomId,
+            name
+        );
 
         if (
             res !== null &&
             res.status === "ok"
         ) {
+
             console.log("登録成功");
+
+        } else {
+
+            console.log("登録失敗");
+
         }
     }
 
-    const res =
-        await getRoomState(roomId);
+    const res = await getRoomState(roomId);
 
-    const host =
-        res.room.host;
+    if (
+        res === null ||
+        res.status !== "ok"
+    ) {
+        return;
+    }
+
+    const host = res.room.host;
 
     if (host === name) {
 
@@ -264,9 +181,98 @@ async function shokika() {
     } else {
 
         authority = "False";
+
     }
 }
 
+
+// ==============================
+// 名前決定
+// ==============================
+
+async function decision() {
+
+    const nameInput =
+        document.getElementById("name_input");
+
+    playername = nameInput.value.trim();
+
+    if (playername === "") {
+
+        document.getElementById(
+            "name"
+        ).innerHTML =
+            "名前を入力してください";
+
+        return;
+    }
+
+    const re = await registerPlayer(
+        roomId,
+        playername
+    );
+
+    if (
+        re !== null &&
+        re.status === "ok"
+    ) {
+
+        sessionStorage.setItem(
+            "player_name",
+            playername
+        );
+
+        document.getElementById(
+            "name"
+        ).style.display = "none";
+
+        document.getElementById(
+            "waiting"
+        ).style.display = "block";
+
+        document.getElementById(
+            "game-select"
+        ).style.display = "block";
+
+        document.getElementById(
+            "start_button"
+        ).style.display = "block";
+
+        const res = await getRoomState(
+            roomId
+        );
+
+        if (
+            res !== null &&
+            res.status === "ok"
+        ) {
+
+            if (
+                res.room.host === playername
+            ) {
+
+                authority = "True";
+
+            } else {
+
+                authority = "False";
+
+            }
+        }
+
+    } else {
+
+        document.getElementById(
+            "name"
+        ).innerHTML =
+            "名前が重複しています。別の名前を入力してください。";
+    }
+}
+
+
+// ==============================
+// プレイヤー一覧表示
+// ==============================
 
 function updatePlayerList(
     players,
@@ -297,71 +303,316 @@ function updatePlayerList(
         } else {
 
             li.textContent = name;
+
         }
 
         list.appendChild(li);
+
     });
 }
 
 
-let word = "";
+// ==============================
+// ゲーム開始
+// ==============================
 
-let state = 0;
+async function startGame() {
 
+    if (authority !== "True") {
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/start",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    text: roomId
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("開始結果:", data);
+
+        if (data.status === "ok") {
+
+            document.getElementById(
+                "waiting"
+            ).style.display = "none";
+
+            document.getElementById(
+                "game"
+            ).style.display = "block";
+
+            document.getElementById(
+                "select"
+            ).style.display = "none";
+
+            state = 1;
+
+        } else {
+
+            console.error(
+                "開始失敗:",
+                data.text
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error("通信エラー:", error);
+
+    }
+}
+
+
+// ==============================
+// 終了ボタン
+// ==============================
+
+function endGame() {
+
+    document.getElementById(
+        "game"
+    ).style.display = "none";
+
+    document.getElementById(
+        "select"
+    ).style.display = "block";
+
+}
+
+
+// ==============================
+// ゲームデータ初期化API
+// ==============================
+
+async function deleteRoomData(roomId) {
+
+    try {
+
+        const response = await fetch(
+            "/api/room/data_delete",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    room_id: roomId
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("初期化結果:", data);
+
+        return data;
+
+    } catch (error) {
+
+        console.error("通信エラー:", error);
+
+        return null;
+    }
+}
+
+
+// ==============================
+// 継続
+// ==============================
+
+async function continueGame() {
+
+    if (authority !== "True") {
+
+        return;
+    }
+
+    const res = await deleteRoomData(
+        roomId
+    );
+
+    if (
+        res !== null &&
+        res.status === "ok"
+    ) {
+
+        document.getElementById(
+            "select"
+        ).style.display = "none";
+
+        document.getElementById(
+            "game"
+        ).style.display = "none";
+
+        document.getElementById(
+            "waiting"
+        ).style.display = "block";
+
+        state = 0;
+
+        document.getElementById(
+            "game_text"
+        ).innerHTML = "";
+
+        console.log("ゲームを継続します");
+
+    } else {
+
+        console.error(
+            "初期化に失敗しました"
+        );
+
+    }
+}
+
+
+// ==============================
+// 終了
+// ==============================
+
+function finishGame() {
+
+    document.getElementById(
+        "select"
+    ).style.display = "none";
+
+    document.getElementById(
+        "waiting"
+    ).style.display = "block";
+
+    document.getElementById(
+        "game"
+    ).style.display = "none";
+
+    state = 0;
+
+}
+
+
+// ==============================
+// ポーリング
+// ==============================
 
 setInterval(async () => {
 
-    const res =
-        await getRoomState(roomId);
+    const res = await getRoomState(
+        roomId
+    );
 
-    if (res !== null) {
+    if (
+        res === null ||
+        res.status !== "ok"
+    ) {
 
-        updatePlayerList(
-            res.room.players,
-            res.room.host
-        );
+        return;
+    }
 
-        if (state === 0) {
+    updatePlayerList(
+        res.room.players,
+        res.room.host
+    );
 
-            if (
-                res.room.state === "開始済み"
-            ) {
+    // ==============================
+    // 開始待ち
+    // ==============================
 
-                document.getElementById(
-                    "waiting"
-                ).style.display = "none";
+    if (
+        res.room.state === "開始待ち"
+    ) {
 
-                document.getElementById(
-                    "game"
-                ).style.display = "block";
+        if (state !== 0) {
 
-                const words =
-                    res.room.game.words;
+            document.getElementById(
+                "game"
+            ).style.display = "none";
 
-                const otherWords =
-                    Object.entries(words)
-                        .filter(
-                            ([name, word]) =>
-                                name !== playername
-                        );
+            document.getElementById(
+                "select"
+            ).style.display = "none";
 
-                document.getElementById(
-                    "game_text"
-                ).innerHTML =
-                    otherWords
-                        .map(
-                            ([name, word]) =>
-                                `${name}：${word}`
-                        )
-                        .join("<br>");
+            document.getElementById(
+                "waiting"
+            ).style.display = "block";
 
-                state = 1;
-            }
+            document.getElementById(
+                "game_text"
+            ).innerHTML = "";
+
+            state = 0;
+
         }
+
+        return;
+    }
+
+
+    // ==============================
+    // ゲーム開始済み
+    // ==============================
+
+    if (
+        state === 0 &&
+        res.room.state === "開始済み"
+    ) {
+
+        document.getElementById(
+            "waiting"
+        ).style.display = "none";
+
+        document.getElementById(
+            "select"
+        ).style.display = "none";
+
+        document.getElementById(
+            "game"
+        ).style.display = "block";
+
+        const words =
+            res.room.game.words;
+
+        const otherWords =
+            Object.entries(words)
+                .filter(
+                    ([name, word]) =>
+                        name !== playername
+                );
+
+        document.getElementById(
+            "game_text"
+        ).innerHTML =
+            otherWords
+                .map(
+                    ([name, word]) =>
+                        `${name}：${word}`
+                )
+                .join("<br>");
+
+        state = 1;
+
     }
 
 }, 1000);
 
+
+// ==============================
+// 条件選択
+// ==============================
 
 const conditions = [
     [
@@ -373,7 +624,6 @@ const conditions = [
         "その他"
     ]
 ];
-
 
 const selectBox =
     document.getElementById(
@@ -390,9 +640,7 @@ const optionsBox =
         ".select-options"
     );
 
-
 let selectedValue = null;
-
 
 conditions.forEach(
     ([value, text]) => {
@@ -403,7 +651,9 @@ conditions.forEach(
             );
 
         button.type = "button";
+
         button.textContent = text;
+
         button.dataset.value = value;
 
         button.addEventListener(
@@ -422,15 +672,16 @@ conditions.forEach(
                     "選択:",
                     selectedValue
                 );
+
             }
         );
 
         optionsBox.appendChild(
             button
         );
+
     }
 );
-
 
 current.addEventListener(
     "click",
@@ -439,13 +690,20 @@ current.addEventListener(
         selectBox.classList.toggle(
             "open"
         );
+
     }
 );
 
 
+// ==============================
+// DOM読み込み後
+// ==============================
+
 document.addEventListener(
     "DOMContentLoaded",
     function() {
+
         shokika();
+
     }
 );

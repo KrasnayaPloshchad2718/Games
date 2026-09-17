@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request
 import random
 
+
+# ==============================
+# NGワード一覧
+# ==============================
+
 ng_words = [
     "学校", "先生", "宿題", "テスト", "授業",
     "友達", "家族", "兄弟", "名前", "年齢",
@@ -42,11 +47,20 @@ ng_words = [
     "YouTube", "写真", "カメラ", "パスワード", "名前",
     "秘密", "質問", "答え", "理由", "問題",
     "本当", "嘘", "たぶん", "絶対", "もちろん",
-    "もしもし", "ありがとう", "ごめん", "こんにちは", "さようなら",
-    "どうして", "なぜ", "誰", "どこ", "いつ"
+    "もしもし", "ありがとう", "ごめん", "こんにちは", "さようなら"
 ]
 
+
+# ==============================
+# Flask設定
+# ==============================
+
 app = Flask(__name__)
+
+
+# ==============================
+# 部屋データ
+# ==============================
 
 room_list = []
 room_state = {}
@@ -54,13 +68,23 @@ room_state = {}
 test_text = ""
 
 
+# ==============================
+# トップページ
+# ==============================
+
 @app.route("/")
 def index():
+
     return render_template("index.html")
 
 
+# ==============================
+# 部屋作成・接続確認
+# ==============================
+
 @app.route("/api/state", methods=["POST"])
 def get_state():
+
     data = request.get_json()
 
     text = data["text"]
@@ -69,10 +93,13 @@ def get_state():
     print("受信:", text, name)
 
     if text in room_list:
+
         statement = "Not Allowed"
 
     else:
+
         if not name:
+
             return {
                 "state": "Name Required"
             }, 400
@@ -82,51 +109,85 @@ def get_state():
         room_list.append(text)
 
         room_state[text] = {
+
             "host": name,
+
             "players": [],
+
             "state": "開始待ち",
+
             "game": {
+
                 "words": {},
+
                 "turn": 0,
-                "round": 0,
+
+                "round": 0
+
             },
-            "vote": {},
+
+            "vote": {}
+
         }
 
     return {
+
         "state": statement
+
     }
 
 
+# ==============================
+# プレイヤー登録
+# ==============================
+
 @app.route("/api/room/player", methods=["POST"])
 def register_player():
+
     data = request.get_json()
 
     room_id = data["room_id"]
+
     name = data["name"]
 
     if room_id not in room_state:
+
         return {
+
             "status": "error",
+
             "message": "部屋が存在しません"
+
         }, 404
 
     if name in room_state[room_id]["players"]:
+
         return {
+
             "status": "error",
+
             "message": "その名前は既に使用されています"
+
         }, 409
 
     room_state[room_id]["players"].append(name)
 
     return {
+
         "status": "ok",
+
         "players": room_state[room_id]["players"]
+
     }
 
 
+# ==============================
+# テストAPI
+# ==============================
+
 @app.route("/api/test", methods=["POST"])
 def test():
+
     global test_text
 
     data = request.get_json()
@@ -136,42 +197,70 @@ def test():
     print("受信:", test_text)
 
     return {
+
         "status": "ok content={}".format(test_text)
+
     }
 
 
+# ==============================
+# 部屋ページ
+# ==============================
+
 @app.route("/room/<room_id>")
 def room(room_id):
+
     if room_id in room_list:
+
         return render_template(
+
             "room.html",
+
             room_id=room_id
+
         )
+
     else:
+
         return "部屋が存在しません", 404
 
 
+# ==============================
+# 条件一覧
+# ==============================
+
 conditions = {
+
     "weather": "天気"
-    # ほかの話題も追加
+
 }
 
 
 @app.route("/api/conditions")
 def get_conditions():
+
     return {
+
         "status": "ok",
+
         "conditions": conditions
+
     }
 
 
+# ==============================
+# ゲーム開始
+# ==============================
+
 @app.route("/api/start", methods=["POST"])
 def startGame():
+
     data = request.get_json()
 
     room_id = data["text"]
 
     words = []
+
     word_dict = {}
 
     if room_id in room_state:
@@ -179,51 +268,144 @@ def startGame():
         players = room_state[room_id]["players"]
 
         for i in range(len(players)):
+
             word = random.choice(ng_words)
 
             words.append(word)
 
             word_dict.setdefault(
+
                 players[i],
+
                 word
+
             )
 
         room_state[room_id]["game"]["words"] = word_dict
+
         room_state[room_id]["state"] = "開始済み"
 
         return {
+
             "status": "ok",
+
             "words": word_dict,
+
             "text": "開始完了"
+
         }
 
     else:
+
         return {
+
             "status": "error",
+
             "text": "エラーが発生"
+
         }, 404
 
 
+# ==============================
+# 部屋状態取得
+# ==============================
+
 @app.route("/api/roomstate", methods=["POST"])
 def get_roomstate():
+
     data = request.get_json()
 
     room_id = data["room_id"]
 
     if room_id not in room_state:
+
         return {
+
             "status": "error",
+
             "message": "部屋が存在しません"
+
         }, 404
 
     return {
+
         "status": "ok",
+
         "room": room_state[room_id]
+
     }
 
 
+# ==============================
+# ゲームデータ初期化
+# ==============================
+# 継続が選択されたときに実行
+# プレイヤーとホストは維持
+# ゲームデータのみ初期化
+# ==============================
+
+@app.route("/api/room/data_delete", methods=["POST"])
+def delete_room_data():
+
+    data = request.get_json()
+
+    room_id = data.get("room_id")
+
+    if room_id not in room_state:
+
+        return {
+
+            "status": "error",
+
+            "message": "部屋が存在しません"
+
+        }, 404
+
+    room = room_state[room_id]
+
+    # ゲーム状態を初期化
+
+    room["state"] = "開始待ち"
+
+    room["game"] = {
+
+        "words": {},
+
+        "turn": 0,
+
+        "round": 0
+
+    }
+
+    room["vote"] = {}
+
+    print(
+
+        "ゲームデータ初期化:",
+
+        room_id
+
+    )
+
+    return {
+
+        "status": "ok",
+
+        "message": "ゲームデータを初期化しました"
+
+    }
+
+
+# ==============================
+# サーバー起動
+# ==============================
+
 if __name__ == "__main__":
+
     app.run(
+
         host="0.0.0.0",
+
         port=10000
+
     )
