@@ -315,74 +315,55 @@ function updatePlayerList(
 // ==============================
 // ゲーム開始
 // ==============================
-
 async function startGame() {
-
     if (authority !== "True") {
-
+        alert("ホストのみ開始できます");
         return;
     }
 
     try {
+        const res = await fetch("/api/start", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: roomId
+            })
+        });
 
-        const response = await fetch(
-            "/api/start",
-            {
-                method: "POST",
+        const data = await res.json();
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    text: roomId
-                })
-            }
-        );
-
-        const data = await response.json();
-
-        console.log("開始結果:", data);
-
-        if (data.status === "ok") {
-
-            document.getElementById(
-                "waiting"
-            ).style.display = "none";
-
-            document.getElementById(
-                "game"
-            ).style.display = "block";
-
-            document.getElementById(
-                "select"
-            ).style.display = "none";
-
-            state = 1;
-
-        } else {
-
-            console.error(
-                "開始失敗:",
-                data.text
-            );
-
+        if (!res.ok || data.status !== "ok") {
+            alert(data.message || "ゲーム開始に失敗しました");
+            return;
         }
 
+        // 待機画面を非表示
+        document.getElementById("waiting").style.display = "none";
+
+        // ゲーム画面を表示
+        document.getElementById("game").style.display = "block";
+
+        // 選択画面を非表示
+        document.getElementById("select").style.display = "none";
+
+        // stateを0に戻す
+        // ポーリング側のワード表示処理を実行させる
+        state = 0;
+
     } catch (error) {
-
-        console.error("通信エラー:", error);
-
+        console.error("ゲーム開始エラー:", error);
+        alert("ゲーム開始中にエラーが発生しました");
     }
 }
-
 
 // ==============================
 // 終了ボタン
 // ==============================
 
 function endGame() {
-
+    if{authority === "True"}{
     document.getElementById(
         "game"
     ).style.display = "none";
@@ -390,7 +371,7 @@ function endGame() {
     document.getElementById(
         "select"
     ).style.display = "block";
-
+    }
 }
 
 
