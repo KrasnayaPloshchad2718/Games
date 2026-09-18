@@ -3,8 +3,21 @@
 }
 
 
+/* =========================
+   全体
+========================= */
+
+html,
 body {
     margin: 0;
+    padding: 0;
+
+    min-height: 100%;
+    width: 100%;
+}
+
+
+body {
     min-height: 100vh;
 
     display: flex;
@@ -22,6 +35,8 @@ body {
         Arial,
         "Noto Sans JP",
         sans-serif;
+
+    overflow-x: hidden;
 }
 
 
@@ -30,7 +45,9 @@ body {
 ========================= */
 
 #game_area {
-    flex: 1;
+    flex: 1 1 auto;
+
+    width: 0;
     min-width: 0;
     min-height: 100vh;
 
@@ -48,19 +65,22 @@ body {
 
 .room-header {
     width: 100%;
+
     text-align: center;
 }
 
 
 .state {
-    color: #94a3b8;
     margin-bottom: 8px;
+
+    color: #94a3b8;
 }
 
 
 #room_id {
     color: #e2e8f0;
     font-weight: bold;
+
     overflow-wrap: anywhere;
 }
 
@@ -68,6 +88,7 @@ body {
 #player_name {
     font-size: 18px;
     font-weight: bold;
+
     color: white;
 }
 
@@ -87,7 +108,9 @@ body {
 
 
 #name_input {
-    flex: 1;
+    flex: 1 1 auto;
+
+    width: 0;
     min-width: 0;
 
     padding: 14px 16px;
@@ -110,6 +133,8 @@ body {
 
 
 #name_button {
+    flex: 0 0 auto;
+
     padding: 12px 22px;
 
     border: none;
@@ -144,6 +169,7 @@ body {
 
 .waiting_text {
     font-size: 24px;
+
     color: #cbd5e1;
 }
 
@@ -270,6 +296,7 @@ body {
 
 #game {
     width: min(700px, 100%);
+    max-width: 100%;
 
     margin-top: 65px;
     padding: 30px;
@@ -280,17 +307,21 @@ body {
     background: #0f172a;
 
     text-align: center;
+
+    overflow: hidden;
 }
 
 
 #game h2 {
-    color: #cbd5e1;
     margin-top: 0;
     margin-bottom: 30px;
+
+    color: #cbd5e1;
 }
 
 
 #game_text {
+    width: 100%;
     min-height: 100px;
 
     line-height: 2;
@@ -299,12 +330,14 @@ body {
     color: #f8fafc;
 
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 
 .end-button {
-    margin-top: 40px;
+    max-width: 100%;
 
+    margin-top: 40px;
     padding: 12px 35px;
 
     border: none;
@@ -330,6 +363,7 @@ body {
 
 #select {
     width: min(600px, 100%);
+    max-width: 100%;
 
     margin-top: 100px;
     padding: 40px 25px;
@@ -340,6 +374,8 @@ body {
     background: #0f172a;
 
     text-align: center;
+
+    overflow: hidden;
 }
 
 
@@ -348,10 +384,14 @@ body {
     margin-bottom: 35px;
 
     font-size: 28px;
+
+    overflow-wrap: anywhere;
 }
 
 
 .select-buttons {
+    width: 100%;
+
     display: flex;
     justify-content: center;
     gap: 20px;
@@ -360,6 +400,7 @@ body {
 
 .select-buttons button {
     min-width: 130px;
+    max-width: 100%;
 
     padding: 14px 25px;
 
@@ -400,6 +441,7 @@ body {
 
 #qr_area {
     width: min(350px, 100%);
+    max-width: 100%;
 
     margin-top: 50px;
     padding: 25px 20px;
@@ -410,6 +452,8 @@ body {
     background: #0f172a;
 
     text-align: center;
+
+    overflow: hidden;
 }
 
 
@@ -418,6 +462,7 @@ body {
     margin-bottom: 20px;
 
     font-size: 20px;
+
     color: #cbd5e1;
 }
 
@@ -429,18 +474,29 @@ body {
     margin: 0 auto;
     padding: 10px;
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     background: white;
     border-radius: 8px;
+
+    overflow: hidden;
 }
 
 
 #qrcode img,
 #qrcode canvas {
     display: block;
+
+    max-width: 100%;
+    height: auto;
 }
 
 
 #qr_url {
+    width: 100%;
+
     margin: 18px 0 0;
 
     color: #94a3b8;
@@ -449,6 +505,7 @@ body {
     line-height: 1.6;
 
     overflow-wrap: anywhere;
+    word-break: break-all;
 }
 
 
@@ -457,7 +514,10 @@ body {
 ========================= */
 
 #name_area {
+    flex: 0 0 280px;
+
     width: 280px;
+    min-width: 0;
     min-height: 100vh;
 
     padding: 35px 25px;
@@ -465,6 +525,8 @@ body {
     border-left: 1px solid #334155;
 
     background: #0f172a;
+
+    overflow-wrap: anywhere;
 }
 
 
@@ -479,12 +541,17 @@ body {
 
 
 #player_list {
+    width: 100%;
+
     padding: 0;
+
     list-style: none;
 }
 
 
 .player {
+    width: 100%;
+
     margin: 8px 0;
     padding: 12px 15px;
 
@@ -494,6 +561,7 @@ body {
     color: #e2e8f0;
 
     overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 
@@ -522,18 +590,23 @@ body {
 
 
 /* =========================
-   スマートフォン
+   タブレット・スマートフォン
 ========================= */
 
 @media (max-width: 700px) {
 
     body {
+        width: 100%;
+
         flex-direction: column;
     }
 
 
     #game_area {
+        width: 100%;
+        min-width: 0;
         min-height: auto;
+
         padding: 25px 18px;
     }
 
@@ -559,6 +632,8 @@ body {
 
 
     #waiting {
+        width: 100%;
+
         margin-top: 45px;
     }
 
@@ -569,6 +644,8 @@ body {
 
 
     #game {
+        width: 100%;
+
         margin-top: 35px;
         padding: 25px 18px;
     }
@@ -580,6 +657,8 @@ body {
 
 
     #select {
+        width: 100%;
+
         margin-top: 60px;
         padding: 30px 18px;
     }
@@ -602,18 +681,62 @@ body {
 
 
     #qr_area {
+        width: 100%;
+        max-width: 350px;
+
         margin-top: 35px;
     }
 
 
     #name_area {
+        flex: none;
+
         width: 100%;
+        min-width: 0;
         min-height: auto;
 
         padding: 25px 20px;
 
         border-left: none;
         border-top: 1px solid #334155;
+    }
+
+}
+
+
+/* =========================
+   小型スマートフォン
+========================= */
+
+@media (max-width: 380px) {
+
+    #game_area {
+        padding: 20px 12px;
+    }
+
+
+    #game {
+        padding: 20px 12px;
+    }
+
+
+    #select {
+        padding: 25px 12px;
+    }
+
+
+    #qr_area {
+        padding: 20px 12px;
+    }
+
+
+    #game_text {
+        font-size: 17px;
+    }
+
+
+    .waiting_text {
+        font-size: 21px;
     }
 
 }
