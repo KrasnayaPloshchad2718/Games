@@ -12,8 +12,8 @@ body {
     margin: 0;
     padding: 0;
 
-    min-height: 100%;
     width: 100%;
+    min-height: 100%;
 }
 
 
@@ -65,14 +65,12 @@ body {
 
 .room-header {
     width: 100%;
-
     text-align: center;
 }
 
 
 .state {
     margin-bottom: 8px;
-
     color: #94a3b8;
 }
 
@@ -80,7 +78,6 @@ body {
 #room_id {
     color: #e2e8f0;
     font-weight: bold;
-
     overflow-wrap: anywhere;
 }
 
@@ -88,7 +85,6 @@ body {
 #player_name {
     font-size: 18px;
     font-weight: bold;
-
     color: white;
 }
 
@@ -169,7 +165,6 @@ body {
 
 .waiting_text {
     font-size: 24px;
-
     color: #cbd5e1;
 }
 
@@ -462,7 +457,6 @@ body {
     margin-bottom: 20px;
 
     font-size: 20px;
-
     color: #cbd5e1;
 }
 
@@ -569,35 +563,35 @@ body {
    初期状態
 ========================= */
 
+/* 名前入力を表示 */
 #name {
-    display: none;
+    display: flex;
 }
 
-
+/* 待機画面を表示 */
 #waiting {
-    display: none;
+    display: block;
 }
 
-
+/* ゲーム画面は非表示 */
 #game {
     display: none;
 }
 
-
+/* 継続確認は非表示 */
 #select {
     display: none;
 }
 
 
 /* =========================
-   タブレット・スマートフォン
+   スマートフォン
 ========================= */
 
 @media (max-width: 700px) {
 
     body {
         width: 100%;
-
         flex-direction: column;
     }
 
@@ -633,7 +627,6 @@ body {
 
     #waiting {
         width: 100%;
-
         margin-top: 45px;
     }
 
