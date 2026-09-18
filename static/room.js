@@ -590,7 +590,6 @@ setInterval(async () => {
 
 }, 1000);
 
-
 // ==============================
 // 条件選択
 // ==============================
@@ -608,7 +607,7 @@ const conditions = [
 
 const selectBox =
     document.getElementById(
-        "game-select"
+        "condition_select"
     );
 
 const current =
@@ -623,6 +622,8 @@ const optionsBox =
 
 let selectedValue = null;
 
+
+// 選択肢の生成
 conditions.forEach(
     ([value, text]) => {
 
@@ -641,13 +642,15 @@ conditions.forEach(
             "click",
             () => {
 
-                current.childNodes[0]
-                    .textContent = text;
+                document.getElementById(
+                    "selected-condition"
+                ).textContent = text;
 
                 selectedValue = value;
 
-                selectBox.classList
-                    .remove("open");
+                selectBox.classList.remove(
+                    "open"
+                );
 
                 console.log(
                     "選択:",
@@ -664,6 +667,8 @@ conditions.forEach(
     }
 );
 
+
+// セレクトボックスの開閉
 current.addEventListener(
     "click",
     () => {
@@ -674,7 +679,6 @@ current.addEventListener(
 
     }
 );
-
 
 // ==============================
 // DOM読み込み後
