@@ -5,7 +5,6 @@
 
 body {
     margin: 0;
-
     min-height: 100vh;
 
     display: flex;
@@ -32,35 +31,43 @@ body {
 
 #game_area {
     flex: 1;
-
+    min-width: 0;
     min-height: 100vh;
 
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
 
-    padding: 40px;
+    padding: 35px 25px;
 }
 
 
 /* =========================
-   状態表示
+   部屋情報
 ========================= */
+
+.room-header {
+    width: 100%;
+    text-align: center;
+}
+
 
 .state {
     color: #94a3b8;
+    margin-bottom: 8px;
+}
 
-    margin-bottom: 5px;
+
+#room_id {
+    color: #e2e8f0;
+    font-weight: bold;
+    overflow-wrap: anywhere;
 }
 
 
 #player_name {
     font-size: 18px;
-
     font-weight: bold;
-
     color: white;
 }
 
@@ -70,27 +77,27 @@ body {
 ========================= */
 
 #name {
-    margin-top: 100px;
+    width: min(500px, 100%);
+
+    margin-top: 80px;
 
     display: flex;
-
     gap: 10px;
 }
 
 
 #name_input {
-    width: 250px;
+    flex: 1;
+    min-width: 0;
 
     padding: 14px 16px;
 
     border: 1px solid #475569;
-
     border-radius: 10px;
 
     outline: none;
 
     background: #1e293b;
-
     color: white;
 
     font-size: 16px;
@@ -106,11 +113,9 @@ body {
     padding: 12px 22px;
 
     border: none;
-
     border-radius: 10px;
 
     background: #2563eb;
-
     color: white;
 
     font-size: 16px;
@@ -129,7 +134,9 @@ body {
 ========================= */
 
 #waiting {
-    margin-top: 70px;
+    width: min(500px, 100%);
+
+    margin-top: 60px;
 
     text-align: center;
 }
@@ -137,7 +144,6 @@ body {
 
 .waiting_text {
     font-size: 24px;
-
     color: #cbd5e1;
 }
 
@@ -150,6 +156,7 @@ body {
     position: relative;
 
     width: 320px;
+    max-width: 100%;
 
     margin: 30px auto;
 }
@@ -161,17 +168,13 @@ body {
     padding: 15px 18px;
 
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
 
     border: 1px solid #475569;
-
     border-radius: 12px;
 
     background: #1e293b;
-
     color: white;
 
     font-size: 16px;
@@ -189,17 +192,14 @@ body {
     position: absolute;
 
     top: calc(100% + 6px);
-
     left: 0;
 
     width: 100%;
 
     display: none;
-
     overflow: hidden;
 
     border: 1px solid #475569;
-
     border-radius: 12px;
 
     background: #0f172a;
@@ -208,8 +208,7 @@ body {
 }
 
 
-.select-box.open
-.select-options {
+.select-box.open .select-options {
     display: block;
 }
 
@@ -220,11 +219,9 @@ body {
     padding: 14px;
 
     border: none;
-
     border-bottom: 1px solid #334155;
 
     background: transparent;
-
     color: white;
 
     text-align: left;
@@ -251,11 +248,9 @@ body {
     padding: 14px 45px;
 
     border: none;
-
     border-radius: 12px;
 
     background: #16a34a;
-
     color: white;
 
     font-size: 18px;
@@ -274,14 +269,12 @@ body {
 ========================= */
 
 #game {
-    width: min(700px, 90%);
+    width: min(700px, 100%);
 
-    margin-top: 80px;
-
+    margin-top: 65px;
     padding: 30px;
 
     border: 1px solid #334155;
-
     border-radius: 18px;
 
     background: #0f172a;
@@ -292,19 +285,20 @@ body {
 
 #game h2 {
     color: #cbd5e1;
-
+    margin-top: 0;
     margin-bottom: 30px;
 }
 
 
 #game_text {
-    line-height: 2;
+    min-height: 100px;
 
+    line-height: 2;
     font-size: 22px;
 
     color: #f8fafc;
 
-    min-height: 100px;
+    overflow-wrap: anywhere;
 }
 
 
@@ -314,11 +308,9 @@ body {
     padding: 12px 35px;
 
     border: none;
-
     border-radius: 10px;
 
     background: #dc2626;
-
     color: white;
 
     font-size: 16px;
@@ -337,14 +329,12 @@ body {
 ========================= */
 
 #select {
-    margin-top: 150px;
+    width: min(600px, 100%);
 
-    padding: 40px;
-
-    width: min(600px, 90%);
+    margin-top: 100px;
+    padding: 40px 25px;
 
     border: 1px solid #334155;
-
     border-radius: 20px;
 
     background: #0f172a;
@@ -354,6 +344,7 @@ body {
 
 
 #select h1 {
+    margin-top: 0;
     margin-bottom: 35px;
 
     font-size: 28px;
@@ -362,9 +353,7 @@ body {
 
 .select-buttons {
     display: flex;
-
     justify-content: center;
-
     gap: 20px;
 }
 
@@ -375,7 +364,6 @@ body {
     padding: 14px 25px;
 
     border: none;
-
     border-radius: 10px;
 
     color: white;
@@ -407,12 +395,69 @@ body {
 
 
 /* =========================
+   QRコード
+========================= */
+
+#qr_area {
+    width: min(350px, 100%);
+
+    margin-top: 50px;
+    padding: 25px 20px;
+
+    border: 1px solid #334155;
+    border-radius: 18px;
+
+    background: #0f172a;
+
+    text-align: center;
+}
+
+
+#qr_area h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    font-size: 20px;
+    color: #cbd5e1;
+}
+
+
+#qrcode {
+    width: 180px;
+    height: 180px;
+
+    margin: 0 auto;
+    padding: 10px;
+
+    background: white;
+    border-radius: 8px;
+}
+
+
+#qrcode img,
+#qrcode canvas {
+    display: block;
+}
+
+
+#qr_url {
+    margin: 18px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================
    参加者一覧
 ========================= */
 
 #name_area {
     width: 280px;
-
     min-height: 100vh;
 
     padding: 35px 25px;
@@ -425,7 +470,6 @@ body {
 
 #name_area h2 {
     margin-top: 0;
-
     padding-bottom: 15px;
 
     border-bottom: 1px solid #334155;
@@ -436,21 +480,20 @@ body {
 
 #player_list {
     padding: 0;
-
     list-style: none;
 }
 
 
 .player {
     margin: 8px 0;
-
     padding: 12px 15px;
 
     border-radius: 10px;
 
     background: #1e293b;
-
     color: #e2e8f0;
+
+    overflow-wrap: anywhere;
 }
 
 
@@ -479,7 +522,7 @@ body {
 
 
 /* =========================
-   スマホ
+   スマートフォン
 ========================= */
 
 @media (max-width: 700px) {
@@ -491,19 +534,7 @@ body {
 
     #game_area {
         min-height: auto;
-
-        padding: 25px;
-    }
-
-
-    #name_area {
-        width: 100%;
-
-        min-height: auto;
-
-        border-left: none;
-
-        border-top: 1px solid #334155;
+        padding: 25px 18px;
     }
 
 
@@ -511,6 +542,9 @@ body {
         width: 100%;
 
         flex-direction: column;
+        gap: 12px;
+
+        margin-top: 60px;
     }
 
 
@@ -519,12 +553,67 @@ body {
     }
 
 
+    #name_button {
+        width: 100%;
+    }
+
+
+    #waiting {
+        margin-top: 45px;
+    }
+
+
     .select-box {
-        width: 90vw;
+        width: 100%;
     }
 
 
     #game {
-        margin-top: 40px;
+        margin-top: 35px;
+        padding: 25px 18px;
     }
+
+
+    #game_text {
+        font-size: 19px;
+    }
+
+
+    #select {
+        margin-top: 60px;
+        padding: 30px 18px;
+    }
+
+
+    #select h1 {
+        font-size: 23px;
+    }
+
+
+    .select-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+
+    .select-buttons button {
+        width: 100%;
+    }
+
+
+    #qr_area {
+        margin-top: 35px;
+    }
+
+
+    #name_area {
+        width: 100%;
+        min-height: auto;
+
+        padding: 25px 20px;
+
+        border-left: none;
+        border-top: 1px solid #334155;
+    }
+
 }

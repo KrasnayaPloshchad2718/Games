@@ -2,206 +2,207 @@
 <html lang="ja">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGワードゲーム</title>
 
-    <title>NGWordGame</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='room.css') }}">
 
-    <link
-        rel="stylesheet"
-        href="/static/room.css"
-    >
+    <!-- QRコード生成ライブラリ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+    </script>
 
     <script>
         const roomId = "{{ room_id }}";
     </script>
 
-    <script
-        src="/static/room.js"
-        defer
-    ></script>
-
+    <script src="{{ url_for('static', filename='room.js') }}"
+            defer>
+    </script>
 </head>
 
 <body>
 
-    <section id="game_area">
+    <main id="game_area">
 
-        <!-- 部屋番号 -->
+        <!-- 部屋情報 -->
+        <div class="room-header">
+            <div class="state">
+                部屋ID：<span id="room_id">{{ room_id }}</span>
+            </div>
 
-        <div
-            class="state"
-            id="room_id"
-        >
-            {{ room_id }}
+            <div id="player_name"></div>
         </div>
 
 
-        <!-- プレイヤー名 -->
-
-        <div
-            class="state"
-            id="player_name"
-        ></div>
-
-
-        <!-- ============================== -->
         <!-- 名前入力 -->
-        <!-- ============================== -->
-
-        <div id="name">
+        <section id="name">
 
             <input
                 type="text"
                 id="name_input"
                 placeholder="名前を入力"
+                maxlength="20"
                 autocomplete="off"
             >
 
             <button
                 id="name_button"
-                onclick="decision()"
-            >
+                onclick="decision()">
                 決定
             </button>
 
-        </div>
+        </section>
 
 
-        <!-- ============================== -->
         <!-- 待機画面 -->
-        <!-- ============================== -->
+        <section id="waiting">
 
-        <div
-            id="waiting"
-            style="display: none;"
-        >
+            <h1 class="waiting_text">
+                開始待ち
+            </h1>
 
-            <p>待機中...</p>
-
-
-            <!-- 条件選択 -->
-
-            <div
-                class="select-box"
-                id="game-select"
-            >
+            <div class="select-box" id="condition_select">
 
                 <button
                     class="select-current"
-                    type="button"
-                >
-                    条件を選択
+                    onclick="toggleSelect()">
+
+                    <span id="selected-condition">
+                        お題を選択
+                    </span>
+
                     <span>▼</span>
+
                 </button>
 
                 <div
                     class="select-options"
-                ></div>
+                    id="condition-options">
+
+                    <!-- room.jsから選択肢を追加 -->
+
+                </div>
 
             </div>
 
 
-            <!-- 開始ボタン -->
-
             <button
-                class="select-box"
+                class="start-button"
                 id="start_button"
-                onclick="startGame()"
-            >
+                onclick="startGame()">
+
                 開始
+
             </button>
 
-        </div>
+        </section>
 
 
-        <!-- ============================== -->
         <!-- ゲーム画面 -->
-        <!-- ============================== -->
+        <section id="game">
 
-        <div
-            id="game"
-            style="display: none;"
-        >
-
-            <h2 id="game_title">
-                ↓各プレイヤーのワード一覧
+            <h2>
+                NGワード
             </h2>
 
-
-            <h3 id="game_text"></h3>
-
-
-            <!-- 終了ボタン -->
+            <div id="game_text"></div>
 
             <button
-                id="end_game"
-                onclick="endGame()"
-            >
+                class="end-button"
+                onclick="endGame()">
 
-                <h2>終了</h2>
+                終了
 
             </button>
 
-        </div>
+        </section>
 
 
-        <!-- ============================== -->
-        <!-- 継続・終了選択画面 -->
-        <!-- ============================== -->
-
-        <div
-            id="select"
-            style="display: none;"
-        >
+        <!-- 継続確認画面 -->
+        <section id="select">
 
             <h1>
                 ゲームを続けますか？
             </h1>
 
+            <div class="select-buttons">
 
-            <!-- 継続 -->
+                <button
+                    id="select_continue"
+                    onclick="continueGame()">
 
-            <button
-                id="select_continue"
-                onclick="continueGame()"
-            >
-                再スタート
-            </button>
+                    継続
 
+                </button>
 
-            <!-- 終了 -->
+                <button
+                    id="select_end"
+                    onclick="finishGame()">
 
-            <button
-                id="select_end"
-                onclick="finishGame()"
-            >
-                終了
-            </button>
+                    終了
 
-        </div>
+                </button>
 
-    </section>
+            </div>
+
+        </section>
 
 
-    <!-- ============================== -->
+        <!-- 部屋URLのQRコード -->
+        <section id="qr_area">
+
+            <h2>
+                参加用QRコード
+            </h2>
+
+            <div id="qrcode"></div>
+
+            <p id="qr_url"></p>
+
+        </section>
+
+    </main>
+
+
     <!-- 参加者一覧 -->
-    <!-- ============================== -->
-
     <aside id="name_area">
 
-        <h2>参加者</h2>
+        <h2>
+            参加者
+        </h2>
 
-        <ul id="player_list">
-
-            <!-- JSでここに参加者を追加 -->
-
-        </ul>
+        <ul id="player_list"></ul>
 
     </aside>
 
-</body>
 
+    <!-- QRコード生成 -->
+    <script>
+
+        window.addEventListener("load", function () {
+
+            const currentUrl = window.location.href;
+
+            const qrElement = document.getElementById("qrcode");
+            const urlElement = document.getElementById("qr_url");
+
+            urlElement.textContent = currentUrl;
+
+            new QRCode(qrElement, {
+                text: currentUrl,
+                width: 180,
+                height: 180,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+        });
+
+    </script>
+
+</body>
 </html>
